@@ -1,9 +1,15 @@
-const url = require('url');
+// const url = require('url');
 
 
 
-const http = require('http');
-const fs = require('fs');
+// const http = require('http');
+// const fs = require('fs');
+
+const http = require('http'),
+fs = require('fs'),
+url = require('url');
+
+
 
 http.createServer((request,response)=>{
 
@@ -20,20 +26,22 @@ fs.appendFile('log.txt','URL: ' + addr + '\nTimestamp: ' + new Date() + '\n\n', 
 });
 
 if (q.pathname.includes('documentation')){
-    filePath=(__dirname + './documentation.html');
+    filePath=(__dirname + '/documentation.html');
 }else {
     filePath='index.html';
 }
 
-fs.readFile(filePath,(err,data)=>{
+fs.readFile(filePath,(err, data)=>{
     if(err){
         throw err;
     }
-})
+
 
     response.writeHead(200,{'Content-Type': 'text/html'});
-    // response.write(data);
+    response.write(data);
     response.end();
+
+});
 }).listen(8080);
 
-console.log('My first Node test server is running on Port 8080')
+console.log('My first Node test server is running on Port 8080');
