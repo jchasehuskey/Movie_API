@@ -20,7 +20,7 @@ fs.appendFile('log.txt','URL: ' + addr + '\nTimestamp: ' + new Date() + '\n\n', 
 });
 
 if (q.pathname.includes('documentation')){
-    filePath=(__dirname + 'documentation.html');
+    filePath=(__dirname + './documentation.html');
 }else {
     filePath='index.html';
 }
