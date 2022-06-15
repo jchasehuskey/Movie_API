@@ -1,0 +1,16 @@
+table,
+th,
+td {
+  border: 1px solid;
+  border-collapse: collapse;
+}
+
+.doc-table {
+  background-color: aqua;
+  border: 1px solid;
+}
+
+.method {
+  font-weight: bold;
+  text-align: center;
+}

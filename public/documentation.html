@@ -1,13 +1,164 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Movies API</title>
-</head>
-<body>
+    <link href="/css/docstylesheet.css" rel="stylesheet" />
+  </head>
+  <body>
     <h2>Hi, welcome to my Movies API created by Chase Huskey</h2>
-    <p>This is a rest API conected to a database that stores data about different movies.</p>
-</body>
+    <p>
+      This is a rest API conected to a database that stores data about different
+      movies.
+    </p>
+
+    <table class="doc-table">
+      <tr>
+        <th>Business Logic</th>
+        <th>URL Path</th>
+        <th>HTTP Method</th>
+        <th>Request body data format</th>
+        <th>Response body data format</th>
+      </tr>
+      <tr>
+        <td>Return a list of ALL movies to the user</td>
+        <td>/movies</td>
+        <td class="method">GET</td>
+        <td>None</td>
+        <td>JSON object holding data about all the movies</td>
+      </tr>
+      <tr>
+        <td>
+          Return data (description, genre, director, image URL, whether it’s
+          featured or not) about a single movie by title to the user
+        </td>
+        <td>/movies/title</td>
+        <td class="method">GET</td>
+        <td>None</td>
+        <td>
+          JSON object holding data about a single movie <br />
+          "Name":"Apocalypto" ,"description":"...",
+          "genre"{"name:"thriller","description":"a hectic film"},"director"{
+          "Name": "Mel Gibson","Bio":"..."}
+        </td>
+      </tr>
+      <tr>
+        <td>
+          Return data about a genre (description) by name/title (e.g.,
+          “Thriller”)
+        </td>
+        <td>/movies/genre/genreName</td>
+        <td class="method">GET</td>
+        <td>None</td>
+        <td>
+          JSON object containing data about a specific genre <br />
+          {"Name":"Action", "description":"a rather energetic film"}
+        </td>
+      </tr>
+      <tr>
+        <td>
+          Return data about a director (bio, birth year, death year) by name
+        </td>
+        <td>/movies/director/directorName</td>
+        <td class="method">GET</td>
+        <td>None</td>
+        <td>
+          JSON object containing data about director (bio/birth year) by name
+          <br />
+          {"Name":"Mel Gibson", "Bio":"...", "Birthyear":"1956"}
+        </td>
+      </tr>
+      <tr>
+        <td>Allow new users to register</td>
+        <td>/users</td>
+        <td class="method">POST</td>
+        <td>
+          JSON object containing data about new user
+          <br />
+          { name: "Rick", favoriteMovies:[]}
+        </td>
+        <td>JSON object containing new user data</td>
+      </tr>
+      <tr>
+        <td>Allow users to update their user info (username)</td>
+        <td>/users/id</td>
+        <td class="method">PUT</td>
+        <td>
+          JSON object containing updated username {"name":"Chase updated"}
+        </td>
+        <td>
+          JSON object containing all user info for the specific user by ID
+        </td>
+      </tr>
+      <tr>
+        <td>
+          Allow users to add a movie to their list of favorites (showing only a
+          text that a movie has been added
+        </td>
+        <td>/users/id/movieTitle</td>
+        <td class="method">POST</td>
+        <td>
+          JSON object containing data new favoriteMovies
+          <br />
+          { "name": "Rick", "favoriteMovies":[]}
+        </td>
+        <td>text message stating the movie has been successfully added</td>
+      </tr>
+
+      <tr>
+        <td>
+          Allow users to remove a movie from their list of favorites (showing
+          only a text that a movie has been removed
+        </td>
+        <td>/users/id/movieTitle</td>
+        <td class="method">DElETE</td>
+        <td>None</td>
+        <td>text message stating movie has been removed</td>
+      </tr>
+
+      <tr>
+        <td>
+          Allow existing users to deregister (showing only a text that a user
+          email has been removed
+        </td>
+        <td>/users/id</td>
+        <td class="method">DELETE</td>
+        <td>None</td>
+        <td>text message indicating user has been deleted</td>
+      </tr>
+    </table>
+
+    <h3>Get</h3>
+    <p>Return a list of ALL movies to the user</p>
+    <p>
+      Return data (description, genre, director, image URL, whether its featured
+      or not) about a single movie by title to the user
+    </p>
+    <p>
+      Return data about a genre (description) by name/title (e.g., “Thriller”)
+    </p>
+    <p>Return data about a director (bio, birth year, death year) by name</p>
+
+    <h3>Put</h3>
+    <p>Allow users to update their user info (username)</p>
+
+    <h3>Post</h3>
+    <p>Allow new users to register</p>
+    <p>
+      Allow users to add a movie to their list of favorites (showing only a text
+      that a movie has been added—more on this later)
+    </p>
+
+    <h3>Delete</h3>
+    <p>
+      Allow users to remove a movie from their list of favorites (showing only a
+      text that a movie has been removed—more on this later)
+    </p>
+    <p>
+      Allow existing users to deregister (showing only a text that a user email
+      has been removed—more on this later)
+    </p>
+  </body>
 </html>

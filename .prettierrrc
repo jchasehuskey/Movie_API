@@ -1,0 +1,13 @@
+{
+  "singleQuote": true,
+  "overrides": [
+    {
+      "files": [
+        "**/*.JSON"
+      ],
+      "options": {
+        "singleQuote": false
+      }
+    }
+  ]
+}
