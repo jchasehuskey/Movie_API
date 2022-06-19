@@ -30,6 +30,13 @@
         <td>JSON object holding data about all the movies</td>
       </tr>
       <tr>
+        <td>Return a list of ALL users to the user</td>
+        <td>/users</td>
+        <td class="method">GET</td>
+        <td>None</td>
+        <td>JSON object holding data about all users</td>
+      </tr>
+      <tr>
         <td>
           Return data (description, genre, director, image URL, whether it’s
           featured or not) about a single movie by title to the user
@@ -49,7 +56,7 @@
           Return data about a genre (description) by name/title (e.g.,
           “Thriller”)
         </td>
-        <td>/movies/genre/genreName</td>
+        <td>/movies/genres/genreName</td>
         <td class="method">GET</td>
         <td>None</td>
         <td>
@@ -61,7 +68,7 @@
         <td>
           Return data about a director (bio, birth year, death year) by name
         </td>
-        <td>/movies/director/directorName</td>
+        <td>/movies/directors/directorName</td>
         <td class="method">GET</td>
         <td>None</td>
         <td>
@@ -83,7 +90,7 @@
       </tr>
       <tr>
         <td>Allow users to update their user info (username)</td>
-        <td>/users/id</td>
+        <td>/users/username</td>
         <td class="method">PUT</td>
         <td>
           JSON object containing updated username {"name":"Chase updated"}
@@ -97,13 +104,9 @@
           Allow users to add a movie to their list of favorites (showing only a
           text that a movie has been added
         </td>
-        <td>/users/id/movieTitle</td>
+        <td>/users/Username/movies/MovieID</td>
         <td class="method">POST</td>
-        <td>
-          JSON object containing data new favoriteMovies
-          <br />
-          { "name": "Rick", "favoriteMovies":[]}
-        </td>
+        <td>None</td>
         <td>text message stating the movie has been successfully added</td>
       </tr>
 
@@ -112,8 +115,8 @@
           Allow users to remove a movie from their list of favorites (showing
           only a text that a movie has been removed
         </td>
-        <td>/users/id/movieTitle</td>
-        <td class="method">DElETE</td>
+        <td>/users/Username/movies/MovieID</td>
+        <td class="method">DELETE</td>
         <td>None</td>
         <td>text message stating movie has been removed</td>
       </tr>
@@ -123,7 +126,7 @@
           Allow existing users to deregister (showing only a text that a user
           email has been removed
         </td>
-        <td>/users/id</td>
+        <td>/users/Username</td>
         <td class="method">DELETE</td>
         <td>None</td>
         <td>text message indicating user has been deleted</td>
