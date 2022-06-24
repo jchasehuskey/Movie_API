@@ -8,10 +8,28 @@ const express = require("express"),
   fs = require("fs"),
   mongoose = require("mongoose"),
   Models = require("./models.js");
+const { check, validationResult } = require("express-validator"); //must include as middleware for endpoints to th eroutes that require validation
 
 app.use(bodyParser.json());
-
 app.use(bodyParser.urlencoded({ extended: true }));
+
+const cors = require("cors");
+let allowedOrigins = ["http://localhost:8080", "http://testsite.com"]; //specifies what domains can request API
+app.use(
+  cors({
+    origin: (origin, callback) => {
+      if (!origin) return callback(null, true);
+      if (allowedOrigins.indexOf(origin) === -1) {
+        let message =
+          `The CORS policy for this application doesn’t allow access from origin ` +
+          origin;
+        return callback(new Error(message), false);
+      }
+      return callback(null, true);
+    },
+  })
+);
+
 let auth = require("./auth")(app);
 const passport = require("passport");
 require("./passport");
@@ -38,8 +56,29 @@ app.use(morgan("combined", { stream: accessLogStream }));
 //adds new user via jwt token
 app.post(
   "/users",
-  passport.authenticate("jwt", { session: false }),
+  // Validation logic here for request
+  //you can either use a chain of methods like .not().isEmpty()
+  //which means "opposite of isEmpty" in plain english "is not empty"
+  //or use .isLength({min: 5}) which means
+  //minimum value of 5 characters are only allowed
+  [
+    check("Username", "Username is required").isLength({ min: 5 }),
+    check(
+      "Username",
+      "Username contains non alphanumeric characters - not allowed."
+    ).isAlphanumeric(),
+    check("Password", "Password is required").not().isEmpty(),
+    check("Email", "Email does not appear to be valid").isEmail(),
+  ],
   (req, res) => {
+    // check the validation object for errors
+    let errors = validationResult(req);
+
+    if (!errors.isEmpty()) {
+      return res.status(422).json({ errors: errors.array() });
+    }
+
+    let hashedPassword = Users.hashPassword(req.body.Password);
     Users.findOne({ Username: req.body.Username })
       .then((user) => {
         if (user) {
@@ -70,8 +109,29 @@ app.post(
 //update user mongodb (FindOneAndUpdate) via jwt token
 app.put(
   "/users/:Username",
+
+  // Validation logic here for request
+  //you can either use a chain of methods like .not().isEmpty()
+  //which means "opposite of isEmpty" in plain english "is not empty"
+  //or use .isLength({min: 5}) which means
+  //minimum value of 5 characters are only allowed
+  [
+    check("Username", "Username is required").isLength({ min: 5 }),
+    check(
+      "Username",
+      "Username contains non alphanumeric characters - not allowed."
+    ).isAlphanumeric(),
+    check("Password", "Password is required").not().isEmpty(),
+    check("Email", "Email does not appear to be valid").isEmail(),
+  ],
   passport.authenticate("jwt", { session: false }),
   (req, res) => {
+    // check the validation object for errors
+    let errors = validationResult(req);
+
+    if (!errors.isEmpty()) {
+      return res.status(422).json({ errors: errors.array() });
+    }
     Users.findOneAndUpdate(
       { Username: req.params.Username },
       {
@@ -304,6 +364,11 @@ app.use((err, req, res, next) => {
 });
 
 //listen for requests
-app.listen(8080, () => {
-  console.log("your app is listening on port 8080.");
+const port = process.env.PORT || 8080;
+app.listen(port, "0.0.0.0", () => {
+  console.log("Listening on " + port);
 });
+
+// app.listen(8080, () => {
+//   console.log("your app is listening on port 8080.");
+// });
