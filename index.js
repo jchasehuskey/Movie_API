@@ -39,11 +39,21 @@ app.use(morgan("common"));
 const Movies = Models.Movie;
 const Users = Models.User;
 
-mongoose.connect("mongodb://localhost:27017/myFlixDB", {
-  //allows mongoose to connect with database to perform CRUD operations on documents
-  useNewUrlParser: true,
-  useUnifiedTopology: true,
-});
+mongoose.connect(
+  //connects to atlas db acct
+  process.env.CONNECTION_URI,
+  {
+    //allows mongoose to connect with database to perform CRUD operations on documents
+    useNewUrlParser: true,
+    useUnifiedTopology: true,
+  }
+);
+
+// mongoose.connect("mongodb://localhost:27017/myFlixDB", {
+//   //allows mongoose to connect with database to perform CRUD operations on documents
+//   useNewUrlParser: true,
+//   useUnifiedTopology: true,
+// });
 
 // create a write stream(in append mode)
 // 'a': Open file for appending. The file is created if it does not exist.
