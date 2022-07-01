@@ -14,21 +14,6 @@ app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 
 const cors = require("cors");
-let allowedOrigins = ["http://localhost:8080", "http://testsite.com"]; //specifies what domains can request API
-app.use(
-  cors({
-    origin: (origin, callback) => {
-      if (!origin) return callback(null, true);
-      if (allowedOrigins.indexOf(origin) === -1) {
-        let message =
-          `The CORS policy for this application doesn’t allow access from origin ` +
-          origin;
-        return callback(new Error(message), false);
-      }
-      return callback(null, true);
-    },
-  })
-);
 
 let auth = require("./auth")(app);
 const passport = require("passport");
@@ -39,21 +24,18 @@ app.use(morgan("common"));
 const Movies = Models.Movie;
 const Users = Models.User;
 
-mongoose.connect(
-  //connects to atlas db acct
-  process.env.CONNECTION_URI,
-  {
-    //allows mongoose to connect with database to perform CRUD operations on documents
-    useNewUrlParser: true,
-    useUnifiedTopology: true,
-  }
-);
+mongoose.connect(process.env.CONNECTION_URI, {
+  useNewUrlParser: true,
+  useUnifiedTopology: true,
+});
 
-// mongoose.connect("mongodb://localhost:27017/myFlixDB", {
-//   //allows mongoose to connect with database to perform CRUD operations on documents
-//   useNewUrlParser: true,
-//   useUnifiedTopology: true,
-// });
+// mongoose.connect(
+//   "mongodb+srv://admin1:12345@myflixdb.hqi6xxs.mongodb.net/myFlixDB?retryWrites=true&w=majority",
+//   {
+//     useNewUrlParser: true,
+//     useUnifiedTopology: true,
+//   }
+// );
 
 // create a write stream(in append mode)
 // 'a': Open file for appending. The file is created if it does not exist.
@@ -374,6 +356,7 @@ app.use((err, req, res, next) => {
 });
 
 //listen for requests, also allows port number to change if necessary
+// const port = process.env.PORT || 8080;
 const port = process.env.PORT || 8080;
 app.listen(port, "0.0.0.0", () => {
   console.log("Listening on " + port);
