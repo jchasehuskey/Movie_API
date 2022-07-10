@@ -1,4 +1,4 @@
-const { rearg } = require("lodash");
+// const { rearg } = require("lodash");
 
 const express = require("express"),
   app = express(),
@@ -7,35 +7,44 @@ const express = require("express"),
   morgan = require("morgan"),
   fs = require("fs"),
   mongoose = require("mongoose"),
-  Models = require("./models.js");
-const { check, validationResult } = require("express-validator"); //must include as middleware for endpoints to th eroutes that require validation
-
-app.use(bodyParser.json());
-app.use(bodyParser.urlencoded({ extended: true }));
+  Models = require("./models.js"),
+  Movies = Models.Movie,
+  Users = Models.User;
 
 const cors = require("cors");
+let allowedOrigins = ["http://localhost:8080", "http://testsite.com"];
 
-let auth = require("./auth")(app);
+app.use(
+  cors({
+    origin: (origin, callback) => {
+      if (!origin) return callback(null, true);
+      if (allowedOrigins.indexOf(origin) === -1) {
+        // If a specific origin isn’t found on the list of allowed origins
+        let message =
+          "The CORS policy for this application doesn’t allow access from origin " +
+          origin;
+        return callback(new Error(message), false);
+      }
+      return callback(null, true);
+    },
+  })
+);
+
+let auth = require("./auth.js")(app); //"app" ensures Express is available in auth.js file
 const passport = require("passport");
-require("./passport");
+require("./passport.js");
+
+const { check, validationResult } = require("express-validator"); //must include as middleware for endpoints to the routes that require validation
 
 app.use(morgan("common"));
 
-const Movies = Models.Movie;
-const Users = Models.User;
+app.use(bodyParser.json());
+app.use(bodyParser.urlencoded({ extended: true }));
 
 mongoose.connect(process.env.CONNECTION_URI, {
   useNewUrlParser: true,
   useUnifiedTopology: true,
 });
-
-// mongoose.connect(
-//   "mongodb+srv://admin1:12345@myflixdb.hqi6xxs.mongodb.net/myFlixDB?retryWrites=true&w=majority",
-//   {
-//     useNewUrlParser: true,
-//     useUnifiedTopology: true,
-//   }
-// );
 
 // create a write stream(in append mode)
 // 'a': Open file for appending. The file is created if it does not exist.
@@ -54,7 +63,9 @@ app.post(
   //or use .isLength({min: 5}) which means
   //minimum value of 5 characters are only allowed
   [
-    check("Username", "Username is required").isLength({ min: 5 }),
+    check("Username", "Username must be atleast 5 characters").isLength({
+      min: 5,
+    }),
     check(
       "Username",
       "Username contains non alphanumeric characters - not allowed."
@@ -71,14 +82,15 @@ app.post(
     }
 
     let hashedPassword = Users.hashPassword(req.body.Password);
-    Users.findOne({ Username: req.body.Username })
+    Users.findOne({ Username: req.body.Username }) //searches to see if user exists
+
       .then((user) => {
         if (user) {
           return res.status(400).send(req.body.Username + "already exists");
         } else {
           Users.create({
             Username: req.body.Username,
-            Password: req.body.Password,
+            Password: hashedPassword,
             Email: req.body.Email,
             Birthday: req.body.Birthday,
           })
@@ -196,16 +208,20 @@ app.get(
 );
 
 //Get all movies
-app.get("/movies", (req, res) => {
-  Movies.find()
-    .then((movies) => {
-      res.status(201).json(movies);
-    })
-    .catch((err) => {
-      console.error(err);
-      res.status(500).send("Error: " + err);
-    });
-});
+app.get(
+  "/movies",
+  passport.authenticate("jwt", { session: false }),
+  (req, res) => {
+    Movies.find()
+      .then((movies) => {
+        res.status(201).json(movies);
+      })
+      .catch((err) => {
+        console.error(err);
+        res.status(500).send("Error: " + err);
+      });
+  }
+);
 
 //Get a single movie by name via jwt token
 app.get(
@@ -357,11 +373,8 @@ app.use((err, req, res, next) => {
 
 //listen for requests, also allows port number to change if necessary
 // const port = process.env.PORT || 8080;
+
 const port = process.env.PORT || 8080;
 app.listen(port, "0.0.0.0", () => {
-  console.log("Listening on " + port);
+  console.log("Listening on Port " + port);
 });
-
-// app.listen(8080, () => {
-//   console.log("your app is listening on port 8080.");
-// });
