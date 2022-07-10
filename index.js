@@ -12,6 +12,8 @@ const express = require("express"),
   Users = Models.User;
 
 const cors = require("cors");
+
+const { check, validationResult } = require("express-validator"); //must include as middleware for endpoints to the routes that require validation
 let allowedOrigins = ["http://localhost:8080", "http://testsite.com"];
 
 app.use(
@@ -33,8 +35,6 @@ app.use(
 let auth = require("./auth.js")(app); //"app" ensures Express is available in auth.js file
 const passport = require("passport");
 require("./passport.js");
-
-const { check, validationResult } = require("express-validator"); //must include as middleware for endpoints to the routes that require validation
 
 app.use(morgan("common"));
 
