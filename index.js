@@ -217,7 +217,7 @@ app.get(
       })
       .catch((err) => {
         console.error(err);
-        res.status(500).send("Error: " + err);
+        res.status(500).send("Error: test error " + err);
       });
   }
 );
