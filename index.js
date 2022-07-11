@@ -1,5 +1,3 @@
-// const { rearg } = require("lodash");
-
 const express = require("express"),
   app = express(),
   bodyParser = require("body-parser"),
@@ -11,9 +9,13 @@ const express = require("express"),
   Movies = Models.Movie,
   Users = Models.User;
 
-const cors = require("cors");
+app.use(bodyParser.json());
+app.use(bodyParser.urlencoded({ extended: true }));
 
 const { check, validationResult } = require("express-validator"); //must include as middleware for endpoints to the routes that require validation
+
+const cors = require("cors");
+
 let allowedOrigins = ["http://localhost:8080", "http://testsite.com"];
 
 app.use(
@@ -32,14 +34,11 @@ app.use(
   })
 );
 
-let auth = require("./auth.js")(app); //"app" ensures Express is available in auth.js file
+let auth = require("./auth")(app); //"app" ensures Express is available in auth.js file
 const passport = require("passport");
-require("./passport.js");
+require("./passport");
 
 app.use(morgan("common"));
-
-app.use(bodyParser.json());
-app.use(bodyParser.urlencoded({ extended: true }));
 
 mongoose.connect(process.env.CONNECTION_URI, {
   useNewUrlParser: true,
@@ -218,7 +217,7 @@ app.get(
       })
       .catch((err) => {
         console.error(err);
-        res.status(500).send("Error: cannot authenticate jwt" + err);
+        res.status(500).send("Error: " + err);
       });
   }
 );
