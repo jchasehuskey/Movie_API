@@ -29,7 +29,7 @@ const accessLogStream = fs.createWriteStream("log.txt", {
 app.use(morgan("common"));
 app.use(morgan("combined", { stream: accessLogStream }));
 app.use("/documentation", express.static("public"));
-app.use(express.json()); //new potential line
+// app.use(express.json()); //new potential line
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 
