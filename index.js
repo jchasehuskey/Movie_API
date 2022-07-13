@@ -5,8 +5,7 @@ const express = require("express"),
   bodyParser = require("body-parser"),
   uuid = require("uuid"),
   mongoose = require("mongoose"),
-  Models = require("./models.js"),
-
+  Models = require("./models.js");
 
 const { check, validationResult } = require("express-validator"); //middleware require validation via endpoints
 
@@ -29,7 +28,7 @@ const accessLogStream = fs.createWriteStream("log.txt", {
 app.use(morgan("common"));
 app.use(morgan("combined", { stream: accessLogStream }));
 app.use("/documentation", express.static("public"));
-// app.use(express.json()); //new potential line
+app.use(express.json()); //new potential line
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 
@@ -53,11 +52,9 @@ app.use(
   })
 );
 
-let auth = require("./auth")(app); 
+let auth = require("./auth")(app);
 const passport = require("passport");
 require("./passport");
-
-
 
 //adds new user via jwt token
 app.post(
@@ -344,8 +341,6 @@ app.delete(
     );
   }
 );
-
-
 
 //Error handling
 app.use((err, req, res, next) => {
