@@ -1,18 +1,37 @@
 const express = require("express"),
-  app = express(),
-  bodyParser = require("body-parser"),
-  uuid = require("uuid"),
   morgan = require("morgan"),
   fs = require("fs"),
+  path = require("path"),
+  bodyParser = require("body-parser"),
+  uuid = require("uuid"),
   mongoose = require("mongoose"),
   Models = require("./models.js"),
-  Movies = Models.Movie,
-  Users = Models.User;
 
+
+const { check, validationResult } = require("express-validator"); //middleware require validation via endpoints
+
+//mongoose models
+const Movies = Models.Movie;
+const Users = Models.User;
+
+const app = express();
+
+//connection to mongodb
+mongoose.connect(process.env.CONNECTION_URI, {
+  useNewUrlParser: true,
+  useUnifiedTopology: true,
+});
+
+const accessLogStream = fs.createWriteStream("log.txt", {
+  flag: "a",
+});
+
+app.use(morgan("common"));
+app.use(morgan("combined", { stream: accessLogStream }));
+app.use("/documentation", express.static("public"));
+app.use(express.json()); //new potential line
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
-
-const { check, validationResult } = require("express-validator"); //must include as middleware for endpoints to the routes that require validation
 
 const cors = require("cors");
 
@@ -34,33 +53,16 @@ app.use(
   })
 );
 
-let auth = require("./auth")(app); //"app" ensures Express is available in auth.js file
+let auth = require("./auth")(app); 
 const passport = require("passport");
 require("./passport");
 
-app.use(morgan("common"));
 
-mongoose.connect(process.env.CONNECTION_URI, {
-  useNewUrlParser: true,
-  useUnifiedTopology: true,
-});
-
-// create a write stream(in append mode)
-// 'a': Open file for appending. The file is created if it does not exist.
-const accessLogStream = fs.createWriteStream("log.txt", {
-  flag: "a",
-});
-
-app.use(morgan("combined", { stream: accessLogStream }));
 
 //adds new user via jwt token
 app.post(
   "/users",
-  // Validation logic here for request
-  //you can either use a chain of methods like .not().isEmpty()
-  //which means "opposite of isEmpty" in plain english "is not empty"
-  //or use .isLength({min: 5}) which means
-  //minimum value of 5 characters are only allowed
+
   [
     check("Username", "Username must be atleast 5 characters").isLength({
       min: 5,
@@ -113,11 +115,6 @@ app.post(
 app.put(
   "/users/:Username",
 
-  // Validation logic here for request
-  //you can either use a chain of methods like .not().isEmpty()
-  //which means "opposite of isEmpty" in plain english "is not empty"
-  //or use .isLength({min: 5}) which means
-  //minimum value of 5 characters are only allowed
   [
     check("Username", "Username is required").isLength({ min: 5 }),
     check(
@@ -217,7 +214,7 @@ app.get(
       })
       .catch((err) => {
         console.error(err);
-        res.status(500).send("Error: test error " + err);
+        res.status(500).send("Error:" + err);
       });
   }
 );
@@ -348,8 +345,7 @@ app.delete(
   }
 );
 
-//Access documentation.html through express.static
-app.use("/documentation", express.static("public"));
+
 
 //Error handling
 app.use((err, req, res, next) => {
