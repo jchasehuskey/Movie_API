@@ -191,11 +191,11 @@ app.get(
   (req, res) => {
     Movies.find()
       .then((movies) => {
-        res.status(201).json(movies);
+        res.status(200).json(movies);
       })
       .catch((error) => {
         console.error(error);
-        res.status(500).send("Error " + error);
+        res.status(404).send("Error " + error);
       });
   }
 );
@@ -207,11 +207,11 @@ app.get(
   (req, res) => {
     Movies.find()
       .then((movies) => {
-        res.status(201).json(movies);
+        res.status(200).json(movies);
       })
       .catch((err) => {
         console.error(err);
-        res.status(500).send("Error:" + err);
+        res.status(404).send("Error:" + err);
       });
   }
 );
@@ -227,7 +227,7 @@ app.get(
       })
       .catch((err) => {
         console.error(err);
-        res.status(500).send("Error: " + err);
+        res.status(404).send("Error: " + err);
       });
   }
 );
@@ -243,7 +243,7 @@ app.get(
       })
       .catch((err) => {
         console.error(err);
-        res.status(500).send("Error: " + err);
+        res.status(404).send("Error: " + err);
       });
   }
 );
@@ -259,7 +259,7 @@ app.get(
       })
       .catch((err) => {
         console.error(err);
-        res.status(500).send("Error: " + err);
+        res.status(404).send("Error: " + err);
       });
   }
 );
@@ -271,11 +271,11 @@ app.get(
   (req, res) => {
     Users.find()
       .then((users) => {
-        res.status(201).json(users);
+        res.status(200).json(users);
       })
       .catch((err) => {
         console.error(err);
-        res.status(500).send("Error: " + err);
+        res.status(404).send("Error: " + err);
       });
   }
 );
@@ -293,7 +293,7 @@ app.get(
       })
       .catch((err) => {
         console.error(err);
-        res.status(500).send("Error " + err);
+        res.status(404).send("Error " + err);
       });
   }
 );
@@ -306,14 +306,14 @@ app.delete(
     Users.findOneAndRemove({ Username: req.params.Username })
       .then((user) => {
         if (!user) {
-          res.status(400).send(req.params.Username + " was not found");
+          res.status(404).send(req.params.Username + " was not found");
         } else {
           res.status(200).send(req.params.Username + " was deleted");
         }
       })
       .catch((err) => {
         console.error(err);
-        res.status(500).send("Error: " + err);
+        res.status(404).send("Error: " + err);
       });
   }
 );
