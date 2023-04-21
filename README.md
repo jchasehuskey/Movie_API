@@ -6,6 +6,10 @@ The main purpose of this app is to present how I create a REST API architecture.
 
 This site was built using Heroku GitHub Deploys.
 
+## Integrations
+
+This API is featured LIVE with the myFlix-Angular project at: https://jchasehuskey.github.io/myFlix-Angular-client/welcome
+
 ---
 
 # Getting Started
